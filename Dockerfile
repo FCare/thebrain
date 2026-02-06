@@ -25,9 +25,6 @@ RUN cmake llama.cpp -B llama.cpp/build \
 RUN cmake --build llama.cpp/build --config Release -j --clean-first
 RUN cp llama.cpp/build/bin/llama-* llama.cpp
 
-# Téléchargement des images
-RUN wget https://raw.githubusercontent.com/unslothai/unsloth/refs/heads/main/images/unsloth%20made%20with%20love.png -O unsloth.png
-RUN wget https://files.worldwildlife.org/wwfcmsprod/images/Sloth_Sitting_iStock_3_12_2014/story_full_width/8l7pbjmj29_iStock_000011145477Large_mini__1_.jpg -O picture.png
 
 # Copie du script de démarrage
 COPY start.sh /start.sh
