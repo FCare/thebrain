@@ -64,7 +64,7 @@ services:
     
     # Réseau
     networks:
-      - assitant-network
+      - assistant-network
     
     # Logs
     logging:
