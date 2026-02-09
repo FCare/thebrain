@@ -22,7 +22,7 @@ RUN apt-get install git pciutils build-essential cmake curl libcurl4-openssl-dev
 RUN git clone https://github.com/ggml-org/llama.cpp
 RUN cmake llama.cpp -B llama.cpp/build \
     -DBUILD_SHARED_LIBS=OFF -DGGML_CUDA=ON -DLLAMA_CURL=ON -DLLAMA_OPENSSL=ON
-RUN cmake --build llama.cpp/build --config Release -j --clean-first
+RUN cmake --build llama.cpp/build --config Release -j
 RUN cp llama.cpp/build/bin/llama-* llama.cpp
 
 
