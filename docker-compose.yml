@@ -1,70 +1,40 @@
-# Docker Compose pour Qwen3-VL FastAPI Server
+# Docker Compose pour llama.cpp avec Qwen3-VL
 services:
-  qwen-api:
+  llama-server:
     build:
       context: .
       dockerfile: Dockerfile
-    image: qwen-fastapi:latest
-    container_name: qwen-api-server
+    image: llama-qwen:latest
+    container_name: llama-qwen-server
     
     # Configuration NVIDIA Runtime - OBLIGATOIRE pour GPU
     runtime: nvidia
     
-    # Variables d'environnement
+    # Variables d'environnement GPU
     environment:
-      # Configuration API
-      - API_PREFIX=${API_PREFIX:-}
-      - ROOT_PATH=${ROOT_PATH:-}
-      - HOST=0.0.0.0
-      - PORT=8000
-      - WORKERS=${WORKERS:-1}
-      
-      # Configuration modèle
-      - MODEL_NAME=${MODEL_NAME:-Qwen/Qwen2-VL-7B-Instruct}
-      - MAX_SEQ_LENGTH=${MAX_SEQ_LENGTH:-32768}
-      - LOAD_IN_4BIT=${LOAD_IN_4BIT:-true}
-      
-      # Configuration GPU - OBLIGATOIRE pour le modèle
       - NVIDIA_VISIBLE_DEVICES=1
       - CUDA_VISIBLE_DEVICES=0
-      
-      # Configuration sécurité
-      - CORS_ORIGINS=${CORS_ORIGINS:-*}
-      - TRUSTED_HOSTS=${TRUSTED_HOSTS:-}
-      
-      # Hugging Face token (optionnel pour modèles privés)
-      - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN:-}
     
-    # Suppression du port mapping - accès via Traefik uniquement
-    # ports:
-    #   - "${HOST_PORT:-8000}:8000"
+    # Port exposé
+    ports:
+      - "${HOST_PORT:-8000}:8000"
     
-    # Volumes pour persistance et cache
-    volumes:
-      - ./models:/app/models
-      - ./logs:/app/logs
-      - ./cache:/root/.cache
-    
-    # Configuration mémoire optimisée pour Qwen2-VL-2B
+    # Configuration mémoire pour GGUF Q4_K_XL (~5GB)
     deploy:
       resources:
         limits:
-          memory: 16G  # Nécessaire pour le modèle 2.2B paramètres
+          memory: 8G
           cpus: '4'
     
     # Santé et redémarrage
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000${API_PREFIX:-}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 2m  # Temps pour le chargement du modèle
+      start_period: 2m  # Temps pour le téléchargement du modèle
     
-    restart: always
-    
-    # Réseau Ansible
-    networks:
-      - ansible
+    restart: unless-stopped
     
     # Logs
     logging:
@@ -72,8 +42,3 @@ services:
       options:
         max-size: "100m"
         max-file: "3"
-
-networks:
-  ansible:
-    external: true
-    name: ansible
