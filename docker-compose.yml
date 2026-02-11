@@ -36,9 +36,19 @@ services:
     
     restart: unless-stopped
     
+    # Configuration réseau
+    networks:
+      - ansible
+    
     # Logs
     logging:
       driver: "json-file"
       options:
         max-size: "100m"
         max-file: "3"
+
+# Configuration des réseaux
+networks:
+  ansible:
+    external: true
+    driver: bridge
