@@ -16,7 +16,7 @@
     --ctx-size 131072 \
     -ctk turbo4 \
     -ctv turbo4 \
-    -fa 1
+    -fa 1 &
 
 ./llama-cpp-turboquant/llama-server \
     -hf unsloth/Qwen3-4B-Thinking-2507 \
@@ -34,4 +34,6 @@
     --ctx-size 131072 \
     -ctk turbo4 \
     -ctv turbo4 \
-    -fa 1
+    -fa 1 &
+
+wait
