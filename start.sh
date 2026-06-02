@@ -18,7 +18,7 @@ CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
     -ctv turbo4 \
     -fa 1 &
 
-CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
+CUDA_VISIBLE_DEVICES=0 ./llama-cpp-turboquant/llama-server \
     -hf unsloth/Qwen3-4B-Thinking-2507-GGUF:UD-Q4_K_XL \
     --n-gpu-layers 99 \
     --jinja \
