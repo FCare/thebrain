@@ -12,8 +12,7 @@ services:
     
     # Variables d'environnement GPU
     environment:
-      - NVIDIA_VISIBLE_DEVICES=1
-      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=0,1
     
     # Port exposé
     ports:
