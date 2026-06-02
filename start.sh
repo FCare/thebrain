@@ -19,7 +19,7 @@
     -fa 1 &
 
 ./llama-cpp-turboquant/llama-server \
-    -hf unsloth/Qwen3-4B-Thinking-2507 \
+    -hf unsloth/Qwen3-4B-Thinking-2507-GGUF:UD-Q4_K_XL \
     --n-gpu-layers 99 \
     --jinja \
     --top-p 0.8 \
@@ -31,7 +31,7 @@
     --min-p 0.0 \
     --flash-attn on \
     --presence-penalty 1.5 \
-    --ctx-size 131072 \
+    --ctx-size 65536 \
     -ctk turbo4 \
     -ctv turbo4 \
     -fa 1 &
