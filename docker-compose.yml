@@ -18,6 +18,7 @@ services:
     # Port exposé
     ports:
       - "${HOST_PORT:-8000}:8000"
+      - "${HOST_THINK_PORT:-9000}:9000"
     
     # Volumes pour persistance du cache
     volumes:
