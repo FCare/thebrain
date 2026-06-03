@@ -1,7 +1,7 @@
 #!/bin/bash
 #./llama.cpp/llama-server \
 CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
-    -hf unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL \
+    -hf unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q2_K_XL \
     --n-gpu-layers 99 \
     --jinja \
     --top-p 0.8 \
@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
     -fa 1 &
 
 CUDA_VISIBLE_DEVICES=0 ./llama-cpp-turboquant/llama-server \
-    -hf unsloth/Qwen3-4B-Thinking-2507-GGUF:UD-Q4_K_XL \
+    -hf unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q2_K_XL \
     --n-gpu-layers 99 \
     --jinja \
     --top-p 0.8 \
