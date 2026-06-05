@@ -27,13 +27,10 @@ CUDA_VISIBLE_DEVICES=0 ./llama-cpp-turboquant/llama-server \
     --host 0.0.0.0 \
     --port 9000 \
     --temp 0.7 \
-    --parallel 6\
+    --parallel 2\
     --min-p 0.0 \
     --flash-attn on \
     --presence-penalty 1.5 \
-    --ctx-size 65536 \
-    -ctk turbo4 \
-    -ctv turbo4 \
-    -fa 1 &
+    --ctx-size 16384 &
 
 wait
