@@ -18,19 +18,4 @@ CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
     -ctv turbo4 \
     -fa 1 &
 
-CUDA_VISIBLE_DEVICES=0 ./llama-cpp-turboquant/llama-server \
-    -hf unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q2_K_XL \
-    --n-gpu-layers 99 \
-    --jinja \
-    --top-p 0.8 \
-    --top-k 20 \
-    --host 0.0.0.0 \
-    --port 9000 \
-    --temp 0.7 \
-    --parallel 2\
-    --min-p 0.0 \
-    --flash-attn on \
-    --presence-penalty 1.5 \
-    --ctx-size 16384 &
-
 wait
