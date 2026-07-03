@@ -1,21 +1,16 @@
 #!/bin/bash
-#./llama.cpp/llama-server \
-CUDA_VISIBLE_DEVICES=1 ./llama-cpp-turboquant/llama-server \
-    -hf unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q2_K_XL \
-    --n-gpu-layers 99 \
-    --jinja \
-    --top-p 0.8 \
-    --top-k 20 \
+CUDA_VISIBLE_DEVICES=1 ./llama.cpp/llama-server \
+    -m /root/.cache/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf \
+    --mmproj /root/.cache/mmproj-F16.gguf \
     --host 0.0.0.0 \
     --port 8000 \
-    --temp 0.7 \
-    --parallel 6\
-    --min-p 0.0 \
-    --flash-attn on \
-    --presence-penalty 1.5 \
-    --ctx-size 131072 \
-    -ctk turbo4 \
-    -ctv turbo4 \
-    -fa 1 &
+    --n-gpu-layers 99 \
+    --jinja \
+    --ctx-size 65535 \
+    --temp 1.0 \
+    --top-p 0.95 \
+    --top-k 64 \
+    --parallel 1 \
+    --reasoning off &
 
 wait
