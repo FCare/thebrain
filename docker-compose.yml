@@ -1,49 +1,71 @@
-# Docker Compose pour llama.cpp avec Qwen3-VL
+# Docker Compose pour vLLM avec Gemma 4 12B (W4A16, quantification officielle Google)
 services:
   thebrain:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: llama-qwen:latest
+      dockerfile: Dockerfile.vllm
+    image: vllm-gemma4:nightly
     container_name: thebrain
-    
+
     # Configuration NVIDIA Runtime - OBLIGATOIRE pour GPU
     runtime: nvidia
-    
-    # Variables d'environnement GPU
+    ipc: host
+    shm_size: 16gb
+
+    # Variables d'environnement GPU — CUDA_VISIBLE_DEVICES=1 restreint le process au
+    # GPU1 (GPU0 est utilisé par un autre traitement), comme pour l'ancien llama.cpp.
     environment:
       - NVIDIA_VISIBLE_DEVICES=0,1
-    
+      - CUDA_VISIBLE_DEVICES=1
+
     # Port exposé
     ports:
       - "${HOST_PORT:-8000}:8000"
-      - "${HOST_THINK_PORT:-9000}:9000"
-    
-    # Volumes pour persistance du cache
+
+    # Volumes pour persistance du cache HuggingFace
     volumes:
-      - ./cache:/root/.cache    # Persiste le cache llama.cpp
-    
-    # Configuration mémoire pour GGUF Q4_K_XL (~5GB)
+      - ./cache/huggingface:/root/.cache/huggingface
+
+    # Départ conservateur (contexte/utilisation mémoire) : GPU1 est partagé avec
+    # moshi-server (~4.2 Go déjà utilisés hors de ce conteneur) — à ajuster une fois
+    # la charge réelle observée via nvidia-smi.
+    command:
+      - google/gemma-4-12B-it-qat-w4a16-ct
+      - --trust-remote-code
+      - --max-model-len=32768
+      - --gpu-memory-utilization=0.70
+      - --kv-cache-dtype=fp8
+      - --enable-auto-tool-choice
+      - --reasoning-parser=gemma4
+      - --tool-call-parser=gemma4
+      - --chat-template=examples/tool_chat_template_gemma4.jinja
+      - '--limit-mm-per-prompt={"image": 2, "audio": 0}'
+      - --async-scheduling
+      - --host=0.0.0.0
+      - --port=8000
+
+    # Configuration mémoire hôte (RAM, pas VRAM) — voir l'incident du 6 juillet où
+    # une limite trop basse (8G) causait des OOM du cgroup pendant le chargement.
     deploy:
       resources:
         limits:
-          memory: 8G
+          memory: 16G
           cpus: '4'
-    
+
     # Santé et redémarrage
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 2m  # Temps pour le téléchargement du modèle
-    
+      start_period: 5m  # Téléchargement du modèle (~10 Go) au premier démarrage
+
     restart: unless-stopped
-    
+
     # Configuration réseau
     networks:
       - ansible
-    
+
     # Logs
     logging:
       driver: "json-file"
